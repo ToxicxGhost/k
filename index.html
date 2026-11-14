@@ -47,24 +47,24 @@
         /* --- 2. 3D Book Structure --- */
         #book-wrapper {
             display: none; 
-            perspective: 2000px;
-            width: 90vw;
-            max-width: 900px;
-            height: 85vh;
-            max-height: 600px;
-            position: relative;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            perspective: 2500px;
         }
 
         .book {
-            width: 100%;
-            height: 100%;
+            width: 900px;
+            height: 600px;
+            max-width: 90vw;
+            max-height: 80vh;
             position: relative;
             transform-style: preserve-3d;
-            display: flex; /* Ensures center alignment */
-            justify-content: center;
+            transform: translateX(-25%);
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* A "Leaf" contains a Front and Back page */
         .leaf {
             position: absolute;
             width: 50%;
@@ -76,9 +76,7 @@
             cursor: pointer;
         }
 
-        .leaf.flipped {
-            transform: rotateY(-180deg);
-        }
+        .leaf.flipped { transform: rotateY(-180deg); }
 
         .page {
             position: absolute;
@@ -120,70 +118,162 @@
             box-shadow: inset -10px 0 20px rgba(0,0,0,0.4), -10px 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- 3. Ribbons & Decorations --- */
-        .ribbon {
-            position: absolute;
-            top: 20%;
-            width: 110%;
-            height: 18px;
-            background: linear-gradient(to bottom, #d93856 0%, #ed5572 50%, #d93856 100%);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            z-index: 10;
-        }
-        .page.front .ribbon { left: -5%; transform: rotate(1deg); }
-        .page.back .ribbon { right: -5%; transform: rotate(-1deg); }
-
-        .hanging-photo {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%) rotate(-2deg);
-            z-index: 20;
-            transform-origin: top center;
-            animation: gentleSwing 4s ease-in-out infinite alternate;
+        /* --- 3. Custom Scrapbook Elements (From Moodboard) --- */
+        
+        /* A. Film Strip Layout */
+        .film-strip {
+            background: #111;
+            padding: 15px 35px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 15px;
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.4);
+            /* Creating the film holes */
+            background-image: 
+                radial-gradient(circle at 10px 15px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at 10px 45px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at 10px 75px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at 10px 105px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at calc(100% - 10px) 15px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at calc(100% - 10px) 45px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at calc(100% - 10px) 75px, #fbf5e9 4px, transparent 5px),
+                radial-gradient(circle at calc(100% - 10px) 105px, #fbf5e9 4px, transparent 5px);
+            background-size: 100% 120px;
+        }
+        .film-photo {
+            width: 160px;
+            height: 110px;
+            background: #fff;
+            object-fit: cover;
+            border: 1px solid #333;
         }
 
-        .page.front .hanging-photo { animation-delay: 1s; transform: translateX(-50%) rotate(2deg); }
-
-        @keyframes gentleSwing {
-            0% { transform: translateX(-50%) rotate(-2deg); }
-            100% { transform: translateX(-50%) rotate(2deg); }
-        }
-
-        .push-pin {
-            width: 14px;
-            height: 14px;
-            background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
-            border-radius: 50%;
-            box-shadow: -2px 3px 4px rgba(0,0,0,0.4);
-            position: relative;
-            top: -6px;
-            z-index: 25;
-        }
-
-        .polaroid {
-            background: white;
-            padding: 10px 10px 25px 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            border-radius: 2px;
+        /* B. Red Music Player Frame */
+        .music-player {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%) rotate(3deg);
+            background: #8b1820; /* Deep crimson red */
+            border-radius: 12px;
+            padding: 12px 12px 25px 12px;
             width: 220px;
-            height: 240px;
+            box-shadow: inset 0px 2px 5px rgba(255,255,255,0.2), 5px 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            color: white;
         }
-        
-        .polaroid img, .polaroid video {
+        .music-screen {
+            width: 100%;
+            height: 190px;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+        .music-screen img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border: 1px solid #ddd;
+        }
+        .music-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            position: relative;
+        }
+        .progress-fill {
+            position: absolute;
+            left: 0; top: 0; height: 100%; width: 40%;
+            background: white;
+            border-radius: 2px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* C. Masking Tape & Basic Polaroid */
+        .taped-photo {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-4deg);
+            background: white;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .taped-photo img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .tape {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 80px;
+            height: 25px;
+            background: rgba(230, 220, 200, 0.85); /* Masking tape color */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        /* D. Cinema Ticket */
+        .ticket {
+            position: absolute;
+            top: 55%;
+            right: 20px;
+            transform: rotate(15deg);
+            background: #e4d7c3;
+            border: 2px dashed #8c6a4b;
+            padding: 8px 15px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #5a3d2b;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* E. Text Stickers */
+        .sticker {
+            position: absolute;
+            font-family: 'Caveat', cursive;
+            color: #8b1820;
+            font-size: 28px;
+            font-weight: bold;
+            transform: rotate(-5deg);
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+        }
+        .sticker-red {
+            background: #8b1820;
+            color: white;
+            font-family: 'Times New Roman', serif;
+            padding: 2px 10px;
+            font-size: 16px;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
         }
 
         /* --- 4. Typing Text Effect --- */
         .caption-container {
             position: absolute;
-            bottom: 25%;
+            bottom: 15%;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
@@ -201,147 +291,142 @@
             display: inline-block;
         }
 
-        /* The hidden span holds the text so layout is stable */
-        .caption .hidden-text {
-            visibility: hidden;
-        }
-        
-        /* The visible span animates the typing */
+        .caption .hidden-text { visibility: hidden; }
         .caption .typewriter-text {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 2px solid transparent; /* Cursor */
+            top: 0; left: 0; width: 0;
+            white-space: nowrap; overflow: hidden;
+            border-right: 2px solid transparent;
         }
-        
-        /* Sparkle Follower */
         .caption .sparkle-cursor {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 0;
-            font-size: 18px;
-            opacity: 0;
-            pointer-events: none;
-            text-shadow: 0 0 5px #ffd700;
+            position: absolute; top: 50%; transform: translateY(-50%); left: 0;
+            font-size: 18px; opacity: 0; pointer-events: none; text-shadow: 0 0 5px #ffd700;
         }
 
-        /* Typing Animations triggered by JS class addition */
         .is-typing .typewriter-text {
             animation: typingAnim 2s steps(40, end) forwards;
             border-right: 2px solid #ed5572;
-            animation-delay: 0.8s; /* Wait for page flip */
+            animation-delay: 0.8s;
         }
         .is-typing .sparkle-cursor {
             animation: sparkleFollow 2s steps(40, end) forwards;
-            animation-delay: 0.8s;
-            opacity: 1;
+            animation-delay: 0.8s; opacity: 1;
         }
-        /* Hide cursor after typing is done */
         .is-typing .typewriter-text {
             animation: typingAnim 2s steps(40, end) forwards, blinkCursor 0.5s step-end infinite alternate 2.8s forwards;
         }
 
-        @keyframes typingAnim {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        @keyframes sparkleFollow {
-            from { left: 0; opacity: 1; }
-            to { left: 100%; opacity: 0; }
-        }
-        @keyframes blinkCursor {
-            50% { border-color: transparent; }
+        @keyframes typingAnim { from { width: 0; } to { width: 100%; } }
+        @keyframes sparkleFollow { from { left: 0; opacity: 1; } to { left: 100%; opacity: 0; } }
+        @keyframes blinkCursor { 50% { border-color: transparent; } }
+
+        /* --- 5. Final Letter Setup --- */
+        .letter-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 40px;
         }
 
-        /* --- 5. Final Heart Canvas Styling --- */
-        .final-page-layout {
+        .envelope-wrapper {
+            position: relative;
+            width: 260px;
+            height: 180px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .envelope {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #d93856 0%, #a8203a 100%);
+            border-radius: 10px;
+            position: absolute;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            height: 100%;
-            width: 100%;
-            position: relative;
+            justify-content: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
         }
-
-        .final-page-layout .hanging-photo {
-            top: 10%;
-        }
-
-        .final-page-layout .polaroid {
-            width: 150px;
-            height: 170px;
-            padding: 8px 8px 20px 8px;
-        }
-
-        .final-page-layout .caption-container {
-            bottom: auto;
-            top: 38%; /* Position above canvas */
-        }
-        .final-page-layout .caption {
-            font-size: 22px;
-        }
-
-        #heartCanvas {
+        .envelope::before {
+            content: '';
             position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85%;
-            height: 240px;
-            background: radial-gradient(circle at center, #110408 0%, #000000 100%);
-            border-radius: 10px;
-            box-shadow: inset 0 0 20px #ffb6c144, 0 5px 15px rgba(0,0,0,0.5);
-            opacity: 0;
-            transition: opacity 1.5s ease;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1);
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
         }
-
-        /* --- 6. Cute Page Decorations --- */
-        .page-decor {
+        
+        .wax-seal {
             position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ffd700, #b8860b);
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 20px;
-            opacity: 0.6;
-            pointer-events: none;
-            animation: floatSlow 4s ease-in-out infinite alternate;
         }
-        @keyframes floatSlow {
-            from { transform: translateY(-5px) rotate(-5deg); }
-            to { transform: translateY(5px) rotate(5deg); }
-        }
-        .decor-1 { bottom: 30px; left: 30px; }
-        .decor-2 { top: 30px; right: 30px; animation-delay: -1s; }
-        .decor-3 { bottom: 40px; right: 40px; animation-delay: -2s; font-size: 24px; }
-        .decor-4 { top: 40px; left: 40px; animation-delay: -3s; }
 
-        /* Navigation hints */
-        .nav-hint {
+        .letter-paper {
+            width: 100%;
+            height: 380px;
+            background: #fff;
             position: absolute;
-            bottom: 15px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #a4818a;
-            cursor: pointer;
-            transition: color 0.3s;
-            z-index: 50;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 5px;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border: 1px solid #eee;
         }
-        .nav-hint:hover { color: #d93856; }
-        .page.back .nav-hint { left: 20px; }
-        .page.front .nav-hint { right: 20px; }
+
+        .envelope-wrapper.open .envelope {
+            transform: translateY(120%) rotate(10deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .envelope-wrapper.open .letter-paper {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 1;
+            z-index: 20;
+        }
+
+        /* --- Confetti Canvas Overlay --- */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Background Audio -->
+    <canvas id="confetti-canvas"></canvas>
+
     <audio id="bg-music" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <!-- ========================================== -->
-    <!-- STAGE 1: SECRET LOCK SCREEN                -->
+    <!-- STAGE 1: LOCK SCREEN                       -->
     <!-- ========================================== -->
     <div id="lock-screen">
         <div class="lock-box">
@@ -360,7 +445,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- STAGE 2: 3D BOOK (2-PAGE SPREAD)           -->
+    <!-- STAGE 2: 3D BOOK SPREADS                   -->
     <!-- ========================================== -->
     <div id="book-wrapper">
         <div class="book" id="book">
@@ -368,121 +453,124 @@
             <!-- LEAF 1 -->
             <div class="leaf" id="leaf-1" onclick="flipLeaf(1)">
                 <!-- FRONT: Cover -->
-                <div class="page front cover flex justify-center items-center flex-col">
-                    <div class="text-6xl mb-6">💌</div>
+                <div class="page front cover flex justify-center items-center flex-col relative">
+                    <div class="sticker-red" style="top:20px; left:20px; transform:rotate(-5deg)">The Perfect Match</div>
+                    <div class="text-6xl mb-6 mt-10">💌</div>
                     <h1 class="text-4xl font-bold mb-4 text-center px-4">Our Memories</h1>
-                    <p class="font-handwriting text-2xl text-pink-300">Tap to open</p>
-                    <div class="page-decor decor-1" style="opacity:0.3">✨</div>
-                    <div class="page-decor decor-2" style="opacity:0.3">💖</div>
+                    <div class="sticker" style="bottom: 40px; right: 30px;">Light of my Life</div>
                 </div>
-                <!-- BACK: Page 1 (Left Side of First Spread) -->
-                <div class="page back">
-                    <div class="page-decor decor-1">🌸</div>
-                    <div class="page-decor decor-2">✨</div>
+                <!-- BACK: Page 1 (Left Spread 1 - Film Strip) -->
+                <div class="page back relative">
+                    <div class="sticker" style="top: 20px; left: 20px;">Favorite Person</div>
                     
-                    <div class="ribbon"></div>
-                    <div class="hanging-photo">
-                        <div class="push-pin"></div>
-                        <div class="polaroid">
-                            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80" alt="Memory">
-                        </div>
+                    <!-- Layout A: Film Strip -->
+                    <div class="film-strip">
+                        <!-- EDIT PHOTO 1 -->
+                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=300&q=80" class="film-photo" alt="Memory">
+                        <!-- EDIT PHOTO 2 -->
+                        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=300&q=80" class="film-photo" alt="Memory">
                     </div>
                     
                     <div class="caption-container">
+                        <!-- EDIT CAPTION 1 -->
                         <p class="caption font-handwriting">
-                            <span class="hidden-text">The day it all started... ✨</span>
-                            <span class="typewriter-text">The day it all started... ✨</span>
+                            <span class="hidden-text">Where it all began...</span>
+                            <span class="typewriter-text">Where it all began...</span>
                             <span class="sparkle-cursor">✨</span>
                         </p>
                     </div>
-                    <span class="nav-hint">← Close</span>
                 </div>
             </div>
 
             <!-- LEAF 2 -->
             <div class="leaf" id="leaf-2" onclick="flipLeaf(2)">
-                <!-- FRONT: Page 2 (Right Side of First Spread) -->
-                <div class="page front">
-                    <div class="page-decor decor-3">💕</div>
-                    <div class="page-decor decor-4">🦋</div>
-
-                    <div class="ribbon"></div>
-                    <div class="hanging-photo">
-                        <div class="push-pin"></div>
-                        <div class="polaroid">
-                            <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=600&q=80" alt="Memory">
+                <!-- FRONT: Page 2 (Right Spread 1 - Red Music Player) -->
+                <div class="page front relative">
+                    <div class="sticker" style="top: 20px; right: 20px; transform:rotate(8deg)">Lucky is to have you.</div>
+                    
+                    <!-- Layout B: Red Media Player -->
+                    <div class="music-player">
+                        <div class="music-screen">
+                            <!-- EDIT PHOTO 3 -->
+                            <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=300&q=80" alt="Memory">
+                        </div>
+                        <div class="music-controls">
+                            <div class="text-[10px] text-center mb-1">Our Song</div>
+                            <div class="progress-bar"><div class="progress-fill"></div></div>
+                            <div class="buttons">
+                                <span>⏪</span> <span>▶</span> <span>⏩</span>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="caption-container">
+                        <!-- EDIT CAPTION 2 -->
                         <p class="caption font-handwriting">
-                            <span class="hidden-text">Look at us being goofy 😂💕</span>
-                            <span class="typewriter-text">Look at us being goofy 😂💕</span>
+                            <span class="hidden-text">Playing our favorite memories</span>
+                            <span class="typewriter-text">Playing our favorite memories</span>
                             <span class="sparkle-cursor">✨</span>
                         </p>
                     </div>
-                    <span class="nav-hint">Next Page →</span>
                 </div>
-                <!-- BACK: Page 3 (Left Side of Second Spread) -->
-                <div class="page back">
-                    <div class="page-decor decor-1">🥂</div>
-                    <div class="page-decor decor-2">✨</div>
+                
+                <!-- BACK: Page 3 (Left Spread 2 - Taped Polaroid + Tickets) -->
+                <div class="page back relative">
+                    <!-- Ticket Decoration -->
+                    <div class="ticket">
+                        CINEMA<br>
+                        <span style="font-weight:normal; font-size:9px;">Admit One</span>
+                    </div>
 
-                    <div class="ribbon"></div>
-                    <div class="hanging-photo">
-                        <div class="push-pin"></div>
-                        <div class="polaroid">
-                            <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" alt="Memory">
-                        </div>
+                    <div class="sticker-red" style="top: 50%; left: -10px; transform:rotate(-90deg);">LOVE YOU MORE</div>
+
+                    <!-- Layout C: Taped Photo -->
+                    <div class="taped-photo">
+                        <div class="tape"></div>
+                        <!-- EDIT PHOTO 4 -->
+                        <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=400&q=80" alt="Memory">
                     </div>
                     
                     <div class="caption-container">
+                        <!-- EDIT CAPTION 3 -->
                         <p class="caption font-handwriting">
-                            <span class="hidden-text">I cherish every moment with you 🥂</span>
-                            <span class="typewriter-text">I cherish every moment with you 🥂</span>
+                            <span class="hidden-text">You are my everything</span>
+                            <span class="typewriter-text">You are my everything</span>
                             <span class="sparkle-cursor">✨</span>
                         </p>
                     </div>
-                    <span class="nav-hint">← Prev Page</span>
                 </div>
             </div>
 
-            <!-- LEAF 3 (FINAL PAGE WITH HEART) -->
+            <!-- LEAF 3 (FINAL LETTER PAGE) -->
             <div class="leaf" id="leaf-3" onclick="flipLeaf(3)">
-                <!-- FRONT: Page 4 (Right Side of Second Spread - Finale) -->
-                <div class="page front">
-                    <div class="page-decor decor-3" style="font-size:30px">🌹</div>
-                    <div class="page-decor decor-4">✨</div>
-
-                    <div class="ribbon"></div>
+                <!-- FRONT: Page 4 (Right Spread 2 - Finale Letter) -->
+                <div class="page front" onclick="event.stopPropagation();">
                     
-                    <div class="final-page-layout">
-                        <!-- Hanging Photo -->
-                        <div class="hanging-photo">
-                            <div class="push-pin"></div>
-                            <div class="polaroid">
-                                <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=600&q=80" alt="Final Memory">
+                    <div class="sticker" style="top: 30px; left: 30px; font-size:36px; transform:rotate(-15deg);">P.S. i love u</div>
+
+                    <div class="letter-container">
+                        <div class="envelope-wrapper" id="envelope-wrapper" onclick="openLetter()">
+                            <div class="envelope">
+                                <div class="wax-seal">❤</div>
+                                <span class="text-white font-serif-romantic text-xs mt-12 uppercase tracking-widest">Tap to open</span>
+                            </div>
+                            <div class="letter-paper">
+                                <!-- EDIT YOUR FINAL LETTER TEXT HERE -->
+                                <p class="font-handwriting text-2xl text-gray-800 leading-relaxed">
+                                    My Dearest, <br><br>
+                                    Thank you for all the beautiful memories we've collected in this book. From our very first moments to everything we've shared since, you make my life complete. <br><br>
+                                    I am so incredibly lucky to have you. I can't wait to fill up the rest of these pages with you. <br><br>
+                                    Forever and always, <br>
+                                    <strong>Me</strong>
+                                </p>
                             </div>
                         </div>
-                        
-                        <!-- Caption -->
-                        <div class="caption-container">
-                            <p class="caption font-handwriting">
-                                <span class="hidden-text">Forever and always... 💖</span>
-                                <span class="typewriter-text">Forever and always... 💖</span>
-                                <span class="sparkle-cursor">✨</span>
-                            </p>
-                        </div>
-                        
-                        <!-- MATH HEART CANVAS -->
-                        <canvas id="heartCanvas"></canvas>
                     </div>
                 </div>
                 <!-- BACK: Back Cover -->
                 <div class="page back cover back-cover flex justify-center items-center flex-col">
                     <div class="text-4xl mb-4">🔒</div>
                     <p class="font-handwriting text-2xl text-pink-300">The End</p>
-                    <span class="nav-hint">← Open Again</span>
                 </div>
             </div>
 
@@ -490,15 +578,8 @@
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURATION
-        // ==========================================
         const PASSCODE = "FOREVER"; 
-        const HEART_TEXT = "I love you";
 
-        // ==========================================
-        // 1. LOCK SCREEN LOGIC
-        // ==========================================
         function checkPasscode() {
             const input = document.getElementById('passcode-input').value.trim().toUpperCase();
             const errorMsg = document.getElementById('error-msg');
@@ -508,7 +589,6 @@
                 const lockScreen = document.getElementById('lock-screen');
                 lockScreen.style.transform = 'scale(1.1)';
                 lockScreen.style.opacity = '0';
-                
                 setTimeout(() => {
                     lockScreen.style.display = 'none';
                     initBook();
@@ -523,26 +603,33 @@
             if (e.key === 'Enter') checkPasscode();
         });
 
-        // ==========================================
-        // 2. 3D FLIPBOOK LOGIC
-        // ==========================================
         const leaves = [
             document.getElementById('leaf-1'),
             document.getElementById('leaf-2'),
             document.getElementById('leaf-3')
         ];
         
+        const book = document.getElementById('book');
         let currentSpread = 0; 
-        let heartAnimFrameId = null;
+        const totalSpreads = leaves.length;
 
         function initBook() {
-            document.getElementById('book-wrapper').style.display = 'block';
-            
+            document.getElementById('book-wrapper').style.display = 'flex';
             const audio = document.getElementById('bg-music');
             audio.volume = 0.4;
-            audio.play().catch(e => console.log("Audio play blocked by browser"));
-
+            audio.play().catch(e => console.log("Audio play blocked"));
             updateZIndexes();
+            centerBook();
+        }
+
+        function centerBook() {
+            if (currentSpread === 0) {
+                book.style.transform = 'translateX(-25%)';
+            } else if (currentSpread === totalSpreads) {
+                book.style.transform = 'translateX(25%)';
+            } else {
+                book.style.transform = 'translateX(0)';
+            }
         }
 
         function updateZIndexes() {
@@ -556,179 +643,97 @@
         }
 
         function triggerTypingAnimation(spreadIndex) {
-            // Remove typing class from all containers
             document.querySelectorAll('.caption-container').forEach(c => c.classList.remove('is-typing'));
-            
-            // Add typing class to the active pages
             if (spreadIndex === 1) {
-                // Pages 1 and 2
                 document.querySelector('#leaf-1 .back .caption-container').classList.add('is-typing');
                 document.querySelector('#leaf-2 .front .caption-container').classList.add('is-typing');
             } else if (spreadIndex === 2) {
-                // Pages 3 and 4
                 document.querySelector('#leaf-2 .back .caption-container').classList.add('is-typing');
-                document.querySelector('#leaf-3 .front .caption-container').classList.add('is-typing');
             }
         }
 
         function flipLeaf(leafIndex) {
             const leaf = leaves[leafIndex - 1];
-            
             if (leaf.classList.contains('flipped')) {
                 leaf.classList.remove('flipped');
                 currentSpread--;
             } else {
-                if (leafIndex - 1 !== currentSpread) return;
+                if (leafIndex - 1 !== currentSpread) return; 
                 leaf.classList.add('flipped');
                 currentSpread++;
             }
-
             updateZIndexes();
             setTimeout(updateZIndexes, 300);
-            
-            // Trigger typewriter effect for the new spread
+            centerBook();
             triggerTypingAnimation(currentSpread);
-
-            // Handle Heart Animation Trigger
-            const canvas = document.getElementById('heartCanvas');
-            if (currentSpread === 2) {
-                // Delay canvas fade-in to let the typing finish
-                setTimeout(() => {
-                    canvas.style.opacity = '1';
-                    startTurtleHeartAnimation();
-                }, 2200); 
-            } else {
-                if (heartAnimFrameId) cancelAnimationFrame(heartAnimFrameId);
-                drawnCount = 0; 
-                canvas.style.opacity = '0';
-            }
         }
 
-        // ==========================================
-        // 3. IMPROVED MATH HEART (PYTHON TO JS)
-        // ==========================================
-        function hsvToRgb(h, s, v) {
-            let r, g, b, i, f, p, q, t;
-            i = Math.floor(h * 6);
-            f = h * 6 - i;
-            p = v * (1 - s);
-            q = v * (1 - f * s);
-            t = v * (1 - (1 - f) * s);
-            switch (i % 6) {
-                case 0: r = v, g = t, b = p; break;
-                case 1: r = q, g = v, b = p; break;
-                case 2: r = p, g = v, b = t; break;
-                case 3: r = p, g = q, b = v; break;
-                case 4: r = t, g = p, b = v; break;
-                case 5: r = v, g = p, b = q; break;
-            }
-            return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+        let letterOpened = false;
+
+        function openLetter() {
+            if (letterOpened) return; 
+            letterOpened = true;
+            document.getElementById('envelope-wrapper').classList.add('open');
+            setTimeout(launchConfetti, 400);
         }
 
-        let drawnCount = 0; 
+        let confettiParticles = [];
+        let confettiAnimId = null;
 
-        function startTurtleHeartAnimation() {
-            const canvas = document.getElementById('heartCanvas');
-            if (!canvas) return;
-
-            const dpr = window.devicePixelRatio || 1;
-            
-            const rect = canvas.getBoundingClientRect();
-            const width = rect.width;
-            const height = rect.height;
-
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
-            ctx.scale(dpr, dpr);
-
-            const baseUnit = Math.min(width, height) / 480; 
-            const centerX = width / 2;
-            const centerY = height / 2 + (15 * baseUnit);
-
-            const points = [];
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const emojis = ['💖', '✨', '💝', '🌸', '💕'];
             
-            for (let scale = 11; scale <= 16; scale++) {
-                let hue = 0.95 + (scale - 11) * 0.02;
-                let color = hsvToRgb(hue > 1 ? hue - 1 : hue, 0.8, 1.0);
-
-                for (let i = 0; i < 120; i++) {
-                    const angle = i * (Math.PI * 2) / 120;
-                    
-                    const x = 16 * Math.pow(Math.sin(angle), 3) * scale * baseUnit;
-                    const y = -(
-                        13 * Math.cos(angle)
-                        - 5 * Math.cos(2 * angle)
-                        - 2 * Math.cos(3 * angle)
-                        - Math.cos(4 * angle)
-                    ) * scale * baseUnit;
-                    
-                    points.push({ x: centerX + x, y: centerY + y, scale, color });
-                }
+            for (let i = 0; i < 90; i++) {
+                confettiParticles.push({
+                    x: canvas.width / 2 + (Math.random() * 80 - 40),
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 25, 
+                    vy: -12 - Math.random() * 18,    
+                    gravity: 0.3 + Math.random() * 0.2,
+                    size: 14 + Math.random() * 18,
+                    rotation: Math.random() * 360,
+                    vRot: (Math.random() - 0.5) * 10,
+                    emoji: emojis[Math.floor(Math.random() * emojis.length)],
+                    alpha: 1
+                });
             }
 
-            const pointsPerFrame = 8;
-            drawnCount = 0; 
-
-            function renderFrame() {
-                ctx.fillStyle = "rgba(0, 0, 0, 0.25)"; 
-                ctx.fillRect(0, 0, width, height);
-
-                if (drawnCount < points.length) {
-                    drawnCount = Math.min(drawnCount + pointsPerFrame, points.length);
-                }
-
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                const fontSize = Math.max(6, Math.round(8 * baseUnit));
-                ctx.font = `bold ${fontSize}px Arial`;
-
-                for (let idx = Math.max(0, drawnCount - 150); idx < drawnCount; idx++) {
-                    const pt = points[idx];
-                    
-                    ctx.globalAlpha = 0.85;
-                    ctx.fillStyle = pt.color;
-
-                    if (pt.scale >= 15) {
-                        ctx.shadowColor = pt.color;
-                        ctx.shadowBlur = 8;
-                    } else {
-                        ctx.shadowBlur = 0;
-                    }
-
-                    ctx.fillText(HEART_TEXT, pt.x, pt.y);
-                }
-
-                ctx.shadowBlur = 0;
-                ctx.globalAlpha = 1;
-
-                if (drawnCount >= points.length) {
-                    ctx.fillStyle = "black"; 
-                    ctx.fillRect(0, 0, width, height);
-                    for (let idx = 0; idx < points.length; idx++) {
-                        const pt = points[idx];
-                        ctx.fillStyle = pt.color;
-                        if (pt.scale === 16) {
-                            ctx.shadowColor = pt.color;
-                            ctx.shadowBlur = 6;
-                            ctx.font = `bold ${fontSize + 1}px Arial`;
-                            ctx.globalAlpha = 1;
-                        } else {
-                            ctx.shadowBlur = 0;
-                            ctx.globalAlpha = 0.5;
-                            ctx.font = `normal ${fontSize - 1}px Arial`;
-                        }
-                        ctx.fillText(HEART_TEXT, pt.x, pt.y);
-                    }
-                    return; 
-                }
-
-                heartAnimFrameId = requestAnimationFrame(renderFrame);
-            }
-            renderFrame();
+            if (!confettiAnimId) animateConfetti(canvas, ctx);
         }
+
+        function animateConfetti(canvas, ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confettiParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity; 
+                p.rotation += p.vRot;
+                if (p.y > canvas.height * 0.6) p.alpha -= 0.02;
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.font = `${p.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(p.emoji, 0, 0);
+                ctx.restore();
+            });
+            confettiParticles = confettiParticles.filter(p => p.alpha > 0 && p.y < canvas.height + 100);
+            if (confettiParticles.length > 0) {
+                confettiAnimId = requestAnimationFrame(() => animateConfetti(canvas, ctx));
+            } else {
+                confettiAnimId = null;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        window.addEventListener('resize', centerBook);
     </script>
 </body>
 </html>
-Processed and analysed in code
+Designing scrapbook layouts for a digital creation
