@@ -3,165 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Scrapbook 📖✨</title>
+    <title>Our Secret Scrapbook 📖</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background: linear-gradient(135deg, #FFF8F6 0%, #FFE4EC 50%, #FCE7F3 100%);
+            background: #1a0b12; /* Dark romantic bg */
             font-family: 'Playfair Display', serif;
             color: #4A252C;
-            transition: background 1s ease;
         }
 
-        body.dark-mode {
-            background: #000000;
-            color: #ffffff;
-        }
+        .font-handwriting { font-family: 'Caveat', cursive; }
 
-        .font-handwriting {
-            font-family: 'Caveat', cursive;
-        }
-
-        /* Background Floating Emojis */
-        #bg-particles {
+        /* --- 1. Lock Screen --- */
+        #lock-screen {
             position: fixed;
             inset: 0;
-            pointer-events: none;
-            z-index: 0;
+            background: radial-gradient(circle at center, #2a111a 0%, #0a0306 100%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .lock-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 182, 193, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .bg-emoji {
+        /* --- 2. Scrapbook Aesthetic --- */
+        #book-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') #2a111a;
+        }
+
+        .journal-page {
+            width: 90%;
+            max-width: 450px;
+            height: 85vh;
+            max-height: 700px;
+            background: #fbf5e9; /* Old paper color */
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            border-radius: 5px 25px 25px 5px;
+            position: relative;
+            box-shadow: 15px 15px 40px rgba(0,0,0,0.4), inset -5px 0 15px rgba(0,0,0,0.05);
+            transform-origin: left center;
+            transform-style: preserve-3d;
+        }
+
+        /* Leather Spine Binding */
+        .journal-spine {
             position: absolute;
-            bottom: -50px;
-            font-size: 24px;
-            opacity: 0.4;
-            animation: floatUp linear forwards;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.4; }
-            100% { transform: translateY(-110vh) rotate(360deg) scale(1.2); opacity: 0; }
-        }
-
-        /* Page Turn Sparkle Burst */
-        .burst-particle {
-            position: absolute;
-            font-size: 20px;
-            pointer-events: none;
-            z-index: 50;
-            animation: burstAnim 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes burstAnim {
-            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
-        }
-
-        /* Scrapbook 3D Book Styles */
-        .book-container {
-            perspective: 1500px;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: linear-gradient(to right, #4a2121 0%, #6b2d2d 20%, #4a2121 100%);
+            border-radius: 5px 0 0 5px;
+            box-shadow: 5px 0 10px rgba(0,0,0,0.3);
             z-index: 10;
         }
-
-        .book-page {
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.4s ease;
-            box-shadow: -10px 10px 30px rgba(244, 63, 94, 0.15), inset -2px 0 10px rgba(0,0,0,0.05);
-            background: #fffdfd;
-            border-left: 2px solid #fda4af;
+        .spine-stitch {
+            width: 20px;
+            height: 4px;
+            background: #d4c4b7;
+            margin: 30px auto;
+            border-radius: 2px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.5);
         }
 
-        .turning-next {
-            animation: flipPageNext 0.6s forwards;
+        /* Ribbon & Hanging Photos */
+        .ribbon {
+            position: absolute;
+            top: 25%;
+            left: 30px; /* starts past spine */
+            right: -5px;
+            height: 22px;
+            background: linear-gradient(to bottom, #d93856 0%, #ed5572 50%, #d93856 100%);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 15;
+            transform: rotate(-2deg);
+        }
+        .ribbon::before, .ribbon::after {
+            content: '';
+            position: absolute;
+            background: rgba(0,0,0,0.2);
+            width: 10px;
+            height: 100%;
         }
 
-        @keyframes flipPageNext {
-            0% { transform: rotateY(0deg) scale(1); opacity: 1; }
-            50% { transform: rotateY(-90deg) scale(1.05); opacity: 0.5; }
-            100% { transform: rotateY(-180deg) scale(1); opacity: 0; display: none; }
+        .hanging-photo-container {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            z-index: 20;
+            transform-origin: top center;
+            animation: gentleSwing 4s ease-in-out infinite alternate;
         }
 
-        .turning-in {
-            animation: flipPageIn 0.6s forwards;
+        @keyframes gentleSwing {
+            0% { transform: translateX(-50%) rotate(-3deg); }
+            100% { transform: translateX(-50%) rotate(3deg); }
         }
 
-        @keyframes flipPageIn {
-            0% { transform: rotateY(90deg) scale(1.05); opacity: 0; }
-            100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+        /* The Pin holding the photo to the ribbon */
+        .push-pin {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+            border-radius: 50%;
+            box-shadow: -2px 4px 4px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2);
+            z-index: 25;
+        }
+        .push-pin::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 7px;
+            width: 2px;
+            height: 8px;
+            background: #555;
+            z-index: -1;
         }
 
-        /* Final Heart Canvas */
+        .polaroid {
+            background: white;
+            padding: 12px 12px 35px 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-radius: 2px;
+            width: 240px;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            margin-top: 5px;
+        }
+        
+        .polaroid img, .polaroid video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #eee;
+            border: 1px solid #ddd;
+        }
+
+        /* Page Flip Animation */
+        .page-flip-out { animation: turnPageOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .page-flip-in { animation: turnPageIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+        @keyframes turnPageOut {
+            0% { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+            100% { transform: perspective(1500px) rotateY(-90deg); opacity: 0; }
+        }
+        @keyframes turnPageIn {
+            0% { transform: perspective(1500px) rotateY(90deg); opacity: 0; }
+            100% { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+        }
+
+        /* --- 3. Final Heart Canvas --- */
         #heart-stage {
             position: fixed;
             inset: 0;
             background: black;
-            z-index: 100;
+            z-index: 200;
             display: none;
             opacity: 0;
             transition: opacity 2s ease;
-        }
-        
-        #heartCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
         }
     </style>
 </head>
 <body>
 
-    <!-- Background Audio (Added by JS on first interaction) -->
+    <!-- Background Audio -->
     <audio id="bg-music" loop></audio>
 
-    <!-- Floating Background Particles Container -->
-    <div id="bg-particles"></div>
-
-    <div class="h-screen w-full flex items-center justify-center p-4 book-container relative">
-        
-        <!-- Opening Cover Page -->
-        <div id="cover-page" onclick="startScrapbook()" class="absolute z-30 bg-white/90 backdrop-blur-md px-10 py-16 rounded-r-3xl border border-pink-200 shadow-2xl cursor-pointer transform transition hover:scale-105 hover:-rotate-1 text-center">
-            <div class="text-6xl mb-4">📖</div>
-            <h1 class="text-4xl font-bold text-rose-900 mb-2">Our Scrapbook</h1>
-            <p class="text-rose-500 font-handwriting text-2xl animate-pulse">Tap to open & play music ✨</p>
-        </div>
-
-        <!-- The Scrapbook Page (Reused container) -->
-        <div id="scrapbook-page" class="hidden book-page w-full max-w-md bg-white rounded-r-2xl p-6 sm:p-8 absolute z-20 flex flex-col h-[80vh] max-h-[600px]">
+    <!-- ========================================== -->
+    <!-- STAGE 1: SECRET LOCK SCREEN                -->
+    <!-- ========================================== -->
+    <div id="lock-screen">
+        <div class="lock-box">
+            <h1 class="text-3xl font-bold text-pink-200 mb-2 font-serif-romantic">Secret Scrapbook</h1>
+            <p class="text-pink-300/70 text-sm mb-6">Enter the password to unlock.</p>
             
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-bold uppercase tracking-widest text-rose-400">Chapter <span id="page-num">1</span></span>
-                <span class="text-rose-400">✨</span>
+            <input type="password" id="passcode-input" placeholder="Hint: forever" 
+                   class="w-full bg-black/40 border border-pink-500/50 text-pink-100 text-center px-4 py-3 rounded-xl focus:outline-none focus:border-pink-400 mb-4 tracking-widest uppercase">
+            
+            <p id="error-msg" class="text-red-400 text-xs h-4 mb-4 opacity-0 transition-opacity">Incorrect code. Try again!</p>
+            
+            <button onclick="checkPasscode()" class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(244,63,94,0.4)] transition transform active:scale-95">
+                Unlock 🗝️
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STAGE 2: SCRAPBOOK PAGE                    -->
+    <!-- ========================================== -->
+    <div id="book-container">
+        
+        <div id="journal-page" class="journal-page">
+            <!-- Spine -->
+            <div class="journal-spine">
+                <div class="spine-stitch mt-8"></div>
+                <div class="spine-stitch"></div>
+                <div class="spine-stitch"></div>
+                <div class="spine-stitch"></div>
+                <div class="spine-stitch"></div>
+                <div class="spine-stitch"></div>
             </div>
 
-            <!-- Media Container -->
-            <div class="relative w-full flex-1 bg-rose-50 rounded-xl overflow-hidden shadow-inner border border-rose-100 flex items-center justify-center mb-6">
-                <!-- Image Tag -->
-                <img id="media-img" class="absolute w-full h-full object-cover hidden" src="" alt="Memory">
-                <!-- Video Tag -->
-                <video id="media-vid" class="absolute w-full h-full object-cover hidden" loop muted playsinline preload="auto"></video>
+            <!-- Ribbon -->
+            <div class="ribbon"></div>
+
+            <!-- Hanging Polaroid -->
+            <div class="hanging-photo-container">
+                <div class="push-pin"></div>
+                <div class="polaroid">
+                    <img id="media-img" class="hidden" src="" alt="Memory">
+                    <video id="media-vid" class="hidden" loop muted playsinline></video>
+                </div>
             </div>
 
-            <!-- Caption -->
-            <p id="page-caption" class="font-handwriting text-3xl text-rose-950 font-bold text-center mb-8 h-16 flex items-center justify-center leading-tight">
-                Caption goes here
-            </p>
+            <!-- Hand-written Caption (positioned below the hanging photo) -->
+            <div class="absolute bottom-24 left-12 right-6 text-center">
+                <p id="page-caption" class="font-handwriting text-3xl font-bold text-rose-950 leading-snug">
+                    Caption goes here
+                </p>
+            </div>
 
-            <!-- Navigation Controls -->
-            <div class="flex items-center justify-between mt-auto">
-                <button id="prev-btn" onclick="turnPage(-1)" class="px-5 py-2.5 rounded-full bg-rose-100 text-rose-700 font-semibold hover:bg-rose-200 transition opacity-0 pointer-events-none">
+            <!-- Controls -->
+            <div class="absolute bottom-6 left-14 right-6 flex items-center justify-between">
+                <button id="prev-btn" onclick="turnPage(-1)" class="px-4 py-2 text-rose-700 font-bold hover:bg-rose-200/50 rounded-full transition opacity-0 pointer-events-none">
                     ← Back
                 </button>
-                <div class="flex gap-1" id="page-dots">
-                    <!-- Dots generated by JS -->
-                </div>
-                <button id="next-btn" onclick="turnPage(1)" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-lg hover:shadow-xl transition transform active:scale-95">
+                <span class="text-xs font-bold text-rose-400 uppercase tracking-widest">Page <span id="page-num">1</span></span>
+                <button id="next-btn" onclick="turnPage(1)" class="px-5 py-2 bg-rose-500 text-white font-bold rounded-full shadow-md hover:bg-rose-600 transition active:scale-95">
                     Next →
                 </button>
             </div>
@@ -169,38 +261,39 @@
 
     </div>
 
-    <!-- STAGE 3: Final Parametric Math Heart (Black Screen) -->
-    <div id="heart-stage" class="flex flex-col items-center justify-center">
-        <canvas id="heartCanvas"></canvas>
+    <!-- ========================================== -->
+    <!-- STAGE 3: IMPROVED MATH HEART               -->
+    <!-- ========================================== -->
+    <div id="heart-stage">
+        <canvas id="heartCanvas" class="w-full h-full"></canvas>
     </div>
-
 
     <script>
         /* =========================================================================
            📝 CONFIGURATION: EDIT YOUR SCRAPBOOK HERE
-           Replace these placeholder links with your own photos, videos, and music!
-           If uploading to Vercel, you can put your files in the same folder and 
-           just type the file name (e.g., "song.mp3" or "photo1.jpg").
            ========================================================================= */
         const CONFIG = {
-            // Background music URL
+            // The secret password to unlock the book (UPPERCASE)
+            passcode: "FOREVER", 
+
+            // Background music
             musicSrc: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", 
             
-            // Your Scrapbook Pages
+            // Your Scrapbook Pages (Add as many as you want)
             pages: [
                 {
-                    type: "image", // "image" or "video"
-                    src: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=700&q=80",
-                    text: "The day it all started... ✨💖"
+                    type: "image",
+                    src: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80",
+                    text: "Our story begins here... ✨💖"
                 },
                 {
-                    type: "video", // Works with .mp4 URLs
+                    type: "video",
                     src: "https://www.w3schools.com/html/mov_bbb.mp4", 
-                    text: "Look at us being goofy 😂💕"
+                    text: "Always making me smile 😂💕"
                 },
                 {
                     type: "image",
-                    src: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=700&q=80",
+                    src: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80",
                     text: "I cherish every moment with you 🥂"
                 }
             ],
@@ -209,56 +302,49 @@
             heartText: "I love you"
         };
 
-
-        /* =========================================================================
-           ✨ INTERACTIVE LOGIC & ANIMATIONS
-           ========================================================================= */
-        
         let currentPageIndex = 0;
         let isAnimating = false;
 
-        // Start Scrapbook (Triggered by Cover click to bypass browser audio autoplay limits)
-        function startScrapbook() {
-            // Play Music
+        // --- 1. Passcode Logic ---
+        function checkPasscode() {
+            const input = document.getElementById('passcode-input').value.trim().toUpperCase();
+            const errorMsg = document.getElementById('error-msg');
+            
+            if (input === CONFIG.passcode) {
+                // Success! Fade out lock screen
+                errorMsg.style.opacity = '0';
+                const lockScreen = document.getElementById('lock-screen');
+                lockScreen.style.transform = 'scale(1.1)';
+                lockScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                    openBook();
+                }, 1000);
+            } else {
+                // Fail
+                errorMsg.style.opacity = '1';
+                document.getElementById('passcode-input').value = '';
+            }
+        }
+
+        // Allow pressing Enter to unlock
+        document.getElementById('passcode-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPasscode();
+        });
+
+        // --- 2. Book Logic ---
+        function openBook() {
+            // Play music
             const audio = document.getElementById('bg-music');
             audio.src = CONFIG.musicSrc;
             audio.volume = 0.5;
-            audio.play().catch(e => console.log("Audio play prevented by browser"));
+            audio.play().catch(e => console.log("Audio autoplay prevented"));
 
-            // Hide Cover, Show Book
-            document.getElementById('cover-page').style.display = 'none';
-            const book = document.getElementById('scrapbook-page');
-            book.classList.remove('hidden');
-            book.classList.add('turning-in');
-
-            createPageDots();
+            const container = document.getElementById('book-container');
+            container.style.display = 'flex';
+            
             loadPage(0);
-            spawnBursts(window.innerWidth / 2, window.innerHeight / 2);
-        }
-
-        function createPageDots() {
-            const dotsContainer = document.getElementById('page-dots');
-            dotsContainer.innerHTML = '';
-            // Add dots for each page PLUS one extra for the final heart page
-            for(let i = 0; i <= CONFIG.pages.length; i++) {
-                const dot = document.createElement('div');
-                dot.className = `w-2 h-2 rounded-full ${i === 0 ? 'bg-rose-500 scale-125' : 'bg-rose-200'} transition-all`;
-                dot.id = `dot-${i}`;
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        function updateDots() {
-            for(let i = 0; i <= CONFIG.pages.length; i++) {
-                const dot = document.getElementById(`dot-${i}`);
-                if (dot) {
-                    if (i === currentPageIndex) {
-                        dot.className = 'w-2 h-2 rounded-full bg-rose-500 scale-125 transition-all';
-                    } else {
-                        dot.className = 'w-2 h-2 rounded-full bg-rose-200 transition-all';
-                    }
-                }
-            }
         }
 
         function loadPage(index) {
@@ -283,7 +369,6 @@
                 imgEl.src = pageData.src;
             }
 
-            // Button logic
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
 
@@ -294,7 +379,7 @@
             }
 
             if (index === CONFIG.pages.length - 1) {
-                nextBtn.innerHTML = "A Secret For You ✨";
+                nextBtn.innerHTML = "A Secret ✨";
             } else {
                 nextBtn.innerHTML = "Next →";
             }
@@ -306,117 +391,63 @@
 
             const newIndex = currentPageIndex + direction;
             
-            // Check if proceeding to Final Math Heart Page
             if (newIndex === CONFIG.pages.length) {
-                currentPageIndex = newIndex;
                 triggerFinalHeartPage();
                 return;
             }
 
-            const book = document.getElementById('scrapbook-page');
+            const page = document.getElementById('journal-page');
             
-            // Spawn sparkles at center of screen for the page turn
-            spawnBursts(window.innerWidth / 2, window.innerHeight / 2);
-
-            // Animate Out
-            book.style.animation = 'none';
-            book.offsetHeight; // trigger reflow
-            book.style.animation = 'flipPageNext 0.5s forwards';
+            // Flip out
+            page.classList.remove('page-flip-in');
+            page.classList.add('page-flip-out');
 
             setTimeout(() => {
                 currentPageIndex = newIndex;
                 loadPage(currentPageIndex);
-                updateDots();
 
-                // Animate In
-                book.style.animation = 'none';
-                book.offsetHeight;
-                book.style.animation = 'flipPageIn 0.5s forwards';
+                // Flip in
+                page.classList.remove('page-flip-out');
+                page.classList.add('page-flip-in');
                 
-                setTimeout(() => {
-                    isAnimating = false;
-                }, 500);
-            }, 450);
+                setTimeout(() => { isAnimating = false; }, 700);
+            }, 700);
         }
 
-        // ==========================================
-        // PAGE TURN SPARKLE BURSTS
-        // ==========================================
-        function spawnBursts(x, y) {
-            const emojis = ['✨', '💖', '💕', '💫'];
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'burst-particle';
-                particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                
-                // Random destination offset
-                const tx = (Math.random() - 0.5) * 300 + 'px';
-                const ty = (Math.random() - 0.5) * 300 + 'px';
-                
-                particle.style.setProperty('--tx', tx);
-                particle.style.setProperty('--ty', ty);
-                
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                document.body.appendChild(particle);
-                
-                // Cleanup
-                setTimeout(() => particle.remove(), 800);
-            }
-        }
-
-        // ==========================================
-        // BACKGROUND FLOATING EMOJIS
-        // ==========================================
-        function spawnBackgroundEmoji() {
-            const container = document.getElementById('bg-particles');
-            const emojis = ['💖', '✨', '💕', '💗', '🌸'];
-            const el = document.createElement('div');
-            el.className = 'bg-emoji';
-            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = 8 + Math.random() * 8 + 's';
-            
-            container.appendChild(el);
-
-            setTimeout(() => el.remove(), 16000);
-        }
-        setInterval(spawnBackgroundEmoji, 600);
-
-
-        /* =========================================================================
-           💖 FINAL STAGE: PARAMETRIC "I LOVE YOU" HEART CANVAS
-           (Direct translation of your Python Turtle math logic to JS Canvas)
-           ========================================================================= */
+        // --- 3. Improved Heart Canvas Logic ---
         let heartAnimFrameId = null;
 
         function triggerFinalHeartPage() {
-            // Darken body
-            document.body.classList.add('dark-mode');
+            const stage = document.getElementById('heart-stage');
+            stage.style.display = 'block';
             
-            // Hide scrapbook
-            const book = document.getElementById('scrapbook-page');
-            book.style.animation = 'flipPageNext 0.8s forwards';
-            
+            // Fade in black screen
             setTimeout(() => {
-                const stage = document.getElementById('heart-stage');
-                stage.style.display = 'flex';
-                // Trigger reflow
-                stage.offsetHeight; 
                 stage.style.opacity = '1';
-                
-                // Start drawing heart
                 startTurtleHeartAnimation();
-            }, 800);
+            }, 100);
+        }
+
+        function hsvToRgb(h, s, v) {
+            let r, g, b, i, f, p, q, t;
+            i = Math.floor(h * 6);
+            f = h * 6 - i;
+            p = v * (1 - s);
+            q = v * (1 - f * s);
+            t = v * (1 - (1 - f) * s);
+            switch (i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+            }
+            return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
         }
 
         function startTurtleHeartAnimation() {
-            if (heartAnimFrameId) cancelAnimationFrame(heartAnimFrameId);
-
             const canvas = document.getElementById('heartCanvas');
-            if (!canvas) return;
-
             const dpr = window.devicePixelRatio || 1;
             const width = window.innerWidth;
             const height = window.innerHeight;
@@ -433,16 +464,15 @@
 
             const points = [];
             
-            // Your exact Python math loops translated here
+            // Translate the new upgraded Python math (with color gradient mapping)
             for (let scale = 11; scale <= 16; scale++) {
+                // Hue shift from deep red to soft pink (0.95 to 1.05 approx wrapped)
+                let hue = 0.95 + (scale - 11) * 0.02;
+                let color = hsvToRgb(hue > 1 ? hue - 1 : hue, 0.8, 1.0);
+
                 for (let i = 0; i < 120; i++) {
                     const angle = i * (Math.PI * 2) / 120;
-                    
-                    // x = 16 * sin^3(angle) * scale
                     const x = 16 * Math.pow(Math.sin(angle), 3) * scale * baseUnit;
-                    
-                    // y = (13cos - 5cos(2) - 2cos(3) - cos(4)) * scale
-                    // Note: Y is negative because HTML canvas Y draws downwards (opposite of turtle)
                     const y = -(
                         13 * Math.cos(angle)
                         - 5 * Math.cos(2 * angle)
@@ -450,18 +480,16 @@
                         - Math.cos(4 * angle)
                     ) * scale * baseUnit;
                     
-                    points.push({ x: centerX + x, y: centerY + y, scale });
+                    points.push({ x: centerX + x, y: centerY + y, scale, color });
                 }
             }
 
             let drawnCount = 0;
-            const pointsPerFrame = 5;
+            const pointsPerFrame = 6;
             const labelText = CONFIG.heartText;
-            const glowColor = "#ffb6c1";
 
             function renderFrame() {
-                // Keep background black
-                ctx.fillStyle = "black";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; // Leaves a beautiful trailing ghost effect
                 ctx.fillRect(0, 0, width, height);
 
                 if (drawnCount < points.length) {
@@ -473,43 +501,59 @@
                 const fontSize = Math.max(8, Math.round(9 * baseUnit));
                 ctx.font = `bold ${fontSize}px Arial`;
 
-                for (let idx = 0; idx < drawnCount; idx++) {
+                for (let idx = Math.max(0, drawnCount - 120); idx < drawnCount; idx++) {
                     const pt = points[idx];
                     
-                    // Add slight transparency to inner layers just like the turtle ink overlapping
-                    const ringAlpha = 0.5 + ((pt.scale - 11) / 5) * 0.5;
-                    ctx.globalAlpha = ringAlpha;
-                    ctx.fillStyle = glowColor;
+                    ctx.globalAlpha = 0.8;
+                    ctx.fillStyle = pt.color;
 
-                    // Add a nice neon glow to the outer layers
-                    if (idx > drawnCount - 15 || pt.scale === 16) {
-                        ctx.shadowColor = glowColor;
-                        ctx.shadowBlur = 6;
+                    // Neon Glow on the outer edge
+                    if (pt.scale === 16) {
+                        ctx.shadowColor = pt.color;
+                        ctx.shadowBlur = 10;
                     } else {
                         ctx.shadowBlur = 0;
                     }
 
-                    // Equivalent to t.write("I love you")
                     ctx.fillText(labelText, pt.x, pt.y);
                 }
 
-                ctx.globalAlpha = 1;
                 ctx.shadowBlur = 0;
+                ctx.globalAlpha = 1;
 
-                if (drawnCount < points.length) {
-                    heartAnimFrameId = requestAnimationFrame(renderFrame);
+                // Once completely drawn, solidify it
+                if (drawnCount >= points.length) {
+                    // Final static render
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, width, height);
+                    for (let idx = 0; idx < points.length; idx++) {
+                        const pt = points[idx];
+                        ctx.fillStyle = pt.color;
+                        if (pt.scale === 16) {
+                            ctx.shadowColor = pt.color;
+                            ctx.shadowBlur = 8;
+                            ctx.font = `bold ${fontSize + 1}px Arial`;
+                        } else {
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 0.6;
+                            ctx.font = `normal ${fontSize - 1}px Arial`;
+                        }
+                        ctx.fillText(labelText, pt.x, pt.y);
+                    }
+                    return; // End animation loop
                 }
+
+                heartAnimFrameId = requestAnimationFrame(renderFrame);
             }
             renderFrame();
         }
 
-        // Handle window resize for the canvas
         window.addEventListener('resize', () => {
-            if (currentPageIndex === CONFIG.pages.length) {
+            if (document.getElementById('heart-stage').style.display === 'block') {
+                if (heartAnimFrameId) cancelAnimationFrame(heartAnimFrameId);
                 startTurtleHeartAnimation();
             }
         });
-
     </script>
 </body>
 </html>
