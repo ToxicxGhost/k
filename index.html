@@ -61,7 +61,8 @@
             max-height: 80vh;
             position: relative;
             transform-style: preserve-3d;
-            transform: translateX(-25%);
+            /* No dynamic centering anymore. It just stays perfectly centered */
+            transform: translateX(0); 
             transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -76,7 +77,9 @@
             cursor: pointer;
         }
 
-        .leaf.flipped { transform: rotateY(-180deg); }
+        .leaf.flipped {
+            transform: rotateY(-180deg);
+        }
 
         .page {
             position: absolute;
@@ -118,8 +121,66 @@
             box-shadow: inset -10px 0 20px rgba(0,0,0,0.4), -10px 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- 3. Custom Scrapbook Elements (From Moodboard) --- */
+        /* --- 3. Ribbons & Photos --- */
+        .ribbon {
+            position: absolute;
+            top: 20%;
+            width: 110%;
+            height: 18px;
+            background: linear-gradient(to bottom, #d93856 0%, #ed5572 50%, #d93856 100%);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .page.front .ribbon { left: -5%; transform: rotate(1deg); }
+        .page.back .ribbon { right: -5%; transform: rotate(-1deg); }
+
+        .hanging-photo {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            z-index: 20;
+            transform-origin: top center;
+            animation: gentleSwing 4s ease-in-out infinite alternate;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page.front .hanging-photo { animation-delay: 1s; transform: translateX(-50%) rotate(2deg); }
+
+        @keyframes gentleSwing {
+            0% { transform: translateX(-50%) rotate(-2deg); }
+            100% { transform: translateX(-50%) rotate(2deg); }
+        }
+
+        .push-pin {
+            width: 14px;
+            height: 14px;
+            background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+            border-radius: 50%;
+            box-shadow: -2px 3px 4px rgba(0,0,0,0.4);
+            position: relative;
+            top: -6px;
+            z-index: 25;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border-radius: 2px;
+            width: 220px;
+            height: 240px;
+        }
         
+        .polaroid img, .polaroid video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+
         /* A. Film Strip Layout */
         .film-strip {
             background: #111;
@@ -128,11 +189,10 @@
             flex-direction: column;
             gap: 15px;
             position: absolute;
-            top: 10%;
+            top: 15%;
             left: 50%;
             transform: translateX(-50%) rotate(-2deg);
             box-shadow: 5px 10px 20px rgba(0,0,0,0.4);
-            /* Creating the film holes */
             background-image: 
                 radial-gradient(circle at 10px 15px, #fbf5e9 4px, transparent 5px),
                 radial-gradient(circle at 10px 45px, #fbf5e9 4px, transparent 5px),
@@ -155,10 +215,10 @@
         /* B. Red Music Player Frame */
         .music-player {
             position: absolute;
-            top: 12%;
+            top: 15%;
             left: 50%;
             transform: translateX(-50%) rotate(3deg);
-            background: #8b1820; /* Deep crimson red */
+            background: #8b1820; 
             border-radius: 12px;
             padding: 12px 12px 25px 12px;
             width: 220px;
@@ -176,52 +236,23 @@
             margin-bottom: 12px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
-        .music-screen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .music-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-            position: relative;
-        }
-        .progress-fill {
-            position: absolute;
-            left: 0; top: 0; height: 100%; width: 40%;
-            background: white;
-            border-radius: 2px;
-        }
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            font-size: 12px;
-            margin-top: 5px;
-        }
+        .music-screen img { width: 100%; height: 100%; object-fit: cover; }
+        .music-controls { display: flex; flex-direction: column; gap: 6px; }
+        .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; position: relative; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; width: 40%; background: white; border-radius: 2px; }
+        .buttons { display: flex; justify-content: center; gap: 15px; font-size: 12px; margin-top: 5px; }
 
         /* C. Masking Tape & Basic Polaroid */
         .taped-photo {
             position: absolute;
-            top: 15%;
+            top: 20%;
             left: 50%;
             transform: translateX(-50%) rotate(-4deg);
             background: white;
             padding: 10px 10px 30px 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .taped-photo img {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-        }
+        .taped-photo img { width: 200px; height: 200px; object-fit: cover; }
         .tape {
             position: absolute;
             top: -10px;
@@ -229,7 +260,7 @@
             transform: translateX(-50%) rotate(-2deg);
             width: 80px;
             height: 25px;
-            background: rgba(230, 220, 200, 0.85); /* Masking tape color */
+            background: rgba(230, 220, 200, 0.85); 
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             z-index: 10;
         }
@@ -273,7 +304,7 @@
         /* --- 4. Typing Text Effect --- */
         .caption-container {
             position: absolute;
-            bottom: 15%;
+            bottom: 12%;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
@@ -421,6 +452,7 @@
 
     <canvas id="confetti-canvas"></canvas>
 
+    <!-- EDIT BACKGROUND AUDIO HERE -->
     <audio id="bg-music" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
@@ -450,18 +482,15 @@
     <div id="book-wrapper">
         <div class="book" id="book">
             
-            <!-- LEAF 1 -->
+            <!-- LEAF 1: Back of Cover / Front of Spread 1 -->
             <div class="leaf" id="leaf-1" onclick="flipLeaf(1)">
-                <!-- FRONT: Cover -->
-                <div class="page front cover flex justify-center items-center flex-col relative">
-                    <div class="sticker-red" style="top:20px; left:20px; transform:rotate(-5deg)">The Perfect Match</div>
-                    <div class="text-6xl mb-6 mt-10">💌</div>
-                    <h1 class="text-4xl font-bold mb-4 text-center px-4">Our Memories</h1>
-                    <div class="sticker" style="bottom: 40px; right: 30px;">Light of my Life</div>
+                <!-- FRONT: (Back of the front cover) - Blank paper -->
+                <div class="page front flex justify-center items-center flex-col relative">
                 </div>
+                
                 <!-- BACK: Page 1 (Left Spread 1 - Film Strip) -->
                 <div class="page back relative">
-                    <div class="sticker" style="top: 20px; left: 20px;">Favorite Person</div>
+                    <div class="sticker" style="top: 25px; left: 25px;">Favorite Person</div>
                     
                     <!-- Layout A: Film Strip -->
                     <div class="film-strip">
@@ -470,23 +499,14 @@
                         <!-- EDIT PHOTO 2 -->
                         <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=300&q=80" class="film-photo" alt="Memory">
                     </div>
-                    
-                    <div class="caption-container">
-                        <!-- EDIT CAPTION 1 -->
-                        <p class="caption font-handwriting">
-                            <span class="hidden-text">Where it all began...</span>
-                            <span class="typewriter-text">Where it all began...</span>
-                            <span class="sparkle-cursor">✨</span>
-                        </p>
-                    </div>
                 </div>
             </div>
 
-            <!-- LEAF 2 -->
+            <!-- LEAF 2: Page 2 / Page 3 -->
             <div class="leaf" id="leaf-2" onclick="flipLeaf(2)">
                 <!-- FRONT: Page 2 (Right Spread 1 - Red Music Player) -->
                 <div class="page front relative">
-                    <div class="sticker" style="top: 20px; right: 20px; transform:rotate(8deg)">Lucky is to have you.</div>
+                    <div class="sticker" style="top: 25px; right: 25px; transform:rotate(8deg)">Lucky is to have you.</div>
                     
                     <!-- Layout B: Red Media Player -->
                     <div class="music-player">
@@ -504,7 +524,7 @@
                     </div>
                     
                     <div class="caption-container">
-                        <!-- EDIT CAPTION 2 -->
+                        <!-- EDIT CAPTION 1 -->
                         <p class="caption font-handwriting">
                             <span class="hidden-text">Playing our favorite memories</span>
                             <span class="typewriter-text">Playing our favorite memories</span>
@@ -513,7 +533,7 @@
                     </div>
                 </div>
                 
-                <!-- BACK: Page 3 (Left Spread 2 - Taped Polaroid + Tickets) -->
+                <!-- BACK: Page 3 (Left Spread 2 - Taped Polaroid) -->
                 <div class="page back relative">
                     <!-- Ticket Decoration -->
                     <div class="ticket">
@@ -529,24 +549,15 @@
                         <!-- EDIT PHOTO 4 -->
                         <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=400&q=80" alt="Memory">
                     </div>
-                    
-                    <div class="caption-container">
-                        <!-- EDIT CAPTION 3 -->
-                        <p class="caption font-handwriting">
-                            <span class="hidden-text">You are my everything</span>
-                            <span class="typewriter-text">You are my everything</span>
-                            <span class="sparkle-cursor">✨</span>
-                        </p>
-                    </div>
                 </div>
             </div>
 
-            <!-- LEAF 3 (FINAL LETTER PAGE) -->
+            <!-- LEAF 3: Final Letter / Inside Back Cover -->
             <div class="leaf" id="leaf-3" onclick="flipLeaf(3)">
                 <!-- FRONT: Page 4 (Right Spread 2 - Finale Letter) -->
                 <div class="page front" onclick="event.stopPropagation();">
                     
-                    <div class="sticker" style="top: 30px; left: 30px; font-size:36px; transform:rotate(-15deg);">P.S. i love u</div>
+                    <div class="sticker" style="top: 35px; left: 35px; font-size:36px; transform:rotate(-15deg);">P.S. i love u</div>
 
                     <div class="letter-container">
                         <div class="envelope-wrapper" id="envelope-wrapper" onclick="openLetter()">
@@ -567,10 +578,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- BACK: Back Cover -->
-                <div class="page back cover back-cover flex justify-center items-center flex-col">
-                    <div class="text-4xl mb-4">🔒</div>
-                    <p class="font-handwriting text-2xl text-pink-300">The End</p>
+                
+                <!-- BACK: Back Cover (Inner) - Blank -->
+                <div class="page back flex justify-center items-center flex-col">
                 </div>
             </div>
 
@@ -611,25 +621,20 @@
         
         const book = document.getElementById('book');
         let currentSpread = 0; 
-        const totalSpreads = leaves.length;
-
+        
+        // Since we removed dynamic centering, we ensure it just loads centered
         function initBook() {
             document.getElementById('book-wrapper').style.display = 'flex';
+            book.style.transform = 'translateX(0)'; // Force strict center
             const audio = document.getElementById('bg-music');
             audio.volume = 0.4;
             audio.play().catch(e => console.log("Audio play blocked"));
             updateZIndexes();
-            centerBook();
-        }
-
-        function centerBook() {
-            if (currentSpread === 0) {
-                book.style.transform = 'translateX(-25%)';
-            } else if (currentSpread === totalSpreads) {
-                book.style.transform = 'translateX(25%)';
-            } else {
-                book.style.transform = 'translateX(0)';
-            }
+            
+            // Automatically flip the cover open as soon as they unlock
+            setTimeout(() => {
+                flipLeaf(1);
+            }, 500);
         }
 
         function updateZIndexes() {
@@ -645,10 +650,7 @@
         function triggerTypingAnimation(spreadIndex) {
             document.querySelectorAll('.caption-container').forEach(c => c.classList.remove('is-typing'));
             if (spreadIndex === 1) {
-                document.querySelector('#leaf-1 .back .caption-container').classList.add('is-typing');
-                document.querySelector('#leaf-2 .front .caption-container').classList.add('is-typing');
-            } else if (spreadIndex === 2) {
-                document.querySelector('#leaf-2 .back .caption-container').classList.add('is-typing');
+                document.querySelector('#leaf-2 .front .caption-container')?.classList.add('is-typing');
             }
         }
 
@@ -664,7 +666,6 @@
             }
             updateZIndexes();
             setTimeout(updateZIndexes, 300);
-            centerBook();
             triggerTypingAnimation(currentSpread);
         }
 
@@ -732,8 +733,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
         }
-        window.addEventListener('resize', centerBook);
     </script>
 </body>
 </html>
-Designing scrapbook layouts for a digital creation
+Analysing
