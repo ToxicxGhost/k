@@ -46,7 +46,7 @@
 
         /* --- 2. 3D Book Structure --- */
         #book-wrapper {
-            display: none; /* Shown after unlock */
+            display: none; 
             perspective: 2000px;
             width: 90vw;
             max-width: 900px;
@@ -60,6 +60,8 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
+            display: flex; /* Ensures center alignment */
+            justify-content: center;
         }
 
         /* A "Leaf" contains a Front and Back page */
@@ -74,7 +76,6 @@
             cursor: pointer;
         }
 
-        /* When flipped, it swings to the left side */
         .leaf.flipped {
             transform: rotateY(-180deg);
         }
@@ -99,14 +100,12 @@
             transform: rotateY(0deg);
             border-radius: 2px 15px 15px 2px;
             transform-origin: left;
-            /* Inner spine shadow for right pages */
             box-shadow: inset 20px 0 30px rgba(0,0,0,0.1), inset -5px 0 10px rgba(255,255,255,0.5);
         }
 
         .page.back {
             transform: rotateY(180deg);
             border-radius: 15px 2px 2px 15px;
-            /* Inner spine shadow for left pages */
             box-shadow: inset -20px 0 30px rgba(0,0,0,0.1), inset 5px 0 10px rgba(255,255,255,0.5);
         }
 
@@ -131,17 +130,9 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             z-index: 10;
         }
-        /* Make ribbons look slightly crooked to match perfectly across the spine */
-        .page.front .ribbon {
-            left: -5%;
-            transform: rotate(1deg);
-        }
-        .page.back .ribbon {
-            right: -5%;
-            transform: rotate(-1deg);
-        }
+        .page.front .ribbon { left: -5%; transform: rotate(1deg); }
+        .page.back .ribbon { right: -5%; transform: rotate(-1deg); }
 
-        /* Hanging Polaroid */
         .hanging-photo {
             position: absolute;
             top: 20%;
@@ -189,16 +180,84 @@
             border: 1px solid #ddd;
         }
 
+        /* --- 4. Typing Text Effect --- */
+        .caption-container {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
         .caption {
-            margin-top: 270px;
             font-size: 26px;
             color: #4A252C;
-            text-align: center;
-            width: 80%;
             line-height: 1.2;
+            position: relative;
+            display: inline-block;
         }
 
-        /* --- 4. Final Heart Canvas Styling --- */
+        /* The hidden span holds the text so layout is stable */
+        .caption .hidden-text {
+            visibility: hidden;
+        }
+        
+        /* The visible span animates the typing */
+        .caption .typewriter-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid transparent; /* Cursor */
+        }
+        
+        /* Sparkle Follower */
+        .caption .sparkle-cursor {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            font-size: 18px;
+            opacity: 0;
+            pointer-events: none;
+            text-shadow: 0 0 5px #ffd700;
+        }
+
+        /* Typing Animations triggered by JS class addition */
+        .is-typing .typewriter-text {
+            animation: typingAnim 2s steps(40, end) forwards;
+            border-right: 2px solid #ed5572;
+            animation-delay: 0.8s; /* Wait for page flip */
+        }
+        .is-typing .sparkle-cursor {
+            animation: sparkleFollow 2s steps(40, end) forwards;
+            animation-delay: 0.8s;
+            opacity: 1;
+        }
+        /* Hide cursor after typing is done */
+        .is-typing .typewriter-text {
+            animation: typingAnim 2s steps(40, end) forwards, blinkCursor 0.5s step-end infinite alternate 2.8s forwards;
+        }
+
+        @keyframes typingAnim {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes sparkleFollow {
+            from { left: 0; opacity: 1; }
+            to { left: 100%; opacity: 0; }
+        }
+        @keyframes blinkCursor {
+            50% { border-color: transparent; }
+        }
+
+        /* --- 5. Final Heart Canvas Styling --- */
         .final-page-layout {
             display: flex;
             flex-direction: column;
@@ -206,31 +265,57 @@
             justify-content: flex-start;
             height: 100%;
             width: 100%;
+            position: relative;
         }
 
-        /* Smaller polaroid for the final page to leave room for the canvas */
+        .final-page-layout .hanging-photo {
+            top: 10%;
+        }
+
         .final-page-layout .polaroid {
-            width: 160px;
-            height: 180px;
+            width: 150px;
+            height: 170px;
             padding: 8px 8px 20px 8px;
         }
+
+        .final-page-layout .caption-container {
+            bottom: auto;
+            top: 38%; /* Position above canvas */
+        }
         .final-page-layout .caption {
-            margin-top: 210px; /* adjusted for smaller polaroid */
-            margin-bottom: 5px;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         #heartCanvas {
-            flex: 1;
-            width: 100%;
-            max-height: 220px;
-            /* Creates a smooth fade into the black canvas from the paper */
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 240px;
             background: radial-gradient(circle at center, #110408 0%, #000000 100%);
             border-radius: 10px;
             box-shadow: inset 0 0 20px #ffb6c144, 0 5px 15px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            width: 85%;
+            opacity: 0;
+            transition: opacity 1.5s ease;
         }
+
+        /* --- 6. Cute Page Decorations --- */
+        .page-decor {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.6;
+            pointer-events: none;
+            animation: floatSlow 4s ease-in-out infinite alternate;
+        }
+        @keyframes floatSlow {
+            from { transform: translateY(-5px) rotate(-5deg); }
+            to { transform: translateY(5px) rotate(5deg); }
+        }
+        .decor-1 { bottom: 30px; left: 30px; }
+        .decor-2 { top: 30px; right: 30px; animation-delay: -1s; }
+        .decor-3 { bottom: 40px; right: 40px; animation-delay: -2s; font-size: 24px; }
+        .decor-4 { top: 40px; left: 40px; animation-delay: -3s; }
 
         /* Navigation hints */
         .nav-hint {
@@ -241,6 +326,7 @@
             color: #a4818a;
             cursor: pointer;
             transition: color 0.3s;
+            z-index: 50;
         }
         .nav-hint:hover { color: #d93856; }
         .page.back .nav-hint { left: 20px; }
@@ -286,19 +372,29 @@
                     <div class="text-6xl mb-6">💌</div>
                     <h1 class="text-4xl font-bold mb-4 text-center px-4">Our Memories</h1>
                     <p class="font-handwriting text-2xl text-pink-300">Tap to open</p>
+                    <div class="page-decor decor-1" style="opacity:0.3">✨</div>
+                    <div class="page-decor decor-2" style="opacity:0.3">💖</div>
                 </div>
                 <!-- BACK: Page 1 (Left Side of First Spread) -->
                 <div class="page back">
+                    <div class="page-decor decor-1">🌸</div>
+                    <div class="page-decor decor-2">✨</div>
+                    
                     <div class="ribbon"></div>
                     <div class="hanging-photo">
                         <div class="push-pin"></div>
                         <div class="polaroid">
-                            <!-- EDIT PHOTO 1 HERE -->
                             <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80" alt="Memory">
                         </div>
                     </div>
-                    <!-- EDIT CAPTION 1 HERE -->
-                    <p class="caption font-handwriting">The day it all started... ✨</p>
+                    
+                    <div class="caption-container">
+                        <p class="caption font-handwriting">
+                            <span class="hidden-text">The day it all started... ✨</span>
+                            <span class="typewriter-text">The day it all started... ✨</span>
+                            <span class="sparkle-cursor">✨</span>
+                        </p>
+                    </div>
                     <span class="nav-hint">← Close</span>
                 </div>
             </div>
@@ -307,30 +403,46 @@
             <div class="leaf" id="leaf-2" onclick="flipLeaf(2)">
                 <!-- FRONT: Page 2 (Right Side of First Spread) -->
                 <div class="page front">
+                    <div class="page-decor decor-3">💕</div>
+                    <div class="page-decor decor-4">🦋</div>
+
                     <div class="ribbon"></div>
                     <div class="hanging-photo">
                         <div class="push-pin"></div>
                         <div class="polaroid">
-                            <!-- EDIT PHOTO 2 HERE (Can be video or img) -->
                             <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=600&q=80" alt="Memory">
                         </div>
                     </div>
-                    <!-- EDIT CAPTION 2 HERE -->
-                    <p class="caption font-handwriting">Look at us being goofy 😂💕</p>
+                    
+                    <div class="caption-container">
+                        <p class="caption font-handwriting">
+                            <span class="hidden-text">Look at us being goofy 😂💕</span>
+                            <span class="typewriter-text">Look at us being goofy 😂💕</span>
+                            <span class="sparkle-cursor">✨</span>
+                        </p>
+                    </div>
                     <span class="nav-hint">Next Page →</span>
                 </div>
                 <!-- BACK: Page 3 (Left Side of Second Spread) -->
                 <div class="page back">
+                    <div class="page-decor decor-1">🥂</div>
+                    <div class="page-decor decor-2">✨</div>
+
                     <div class="ribbon"></div>
                     <div class="hanging-photo">
                         <div class="push-pin"></div>
                         <div class="polaroid">
-                            <!-- EDIT PHOTO 3 HERE -->
                             <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" alt="Memory">
                         </div>
                     </div>
-                    <!-- EDIT CAPTION 3 HERE -->
-                    <p class="caption font-handwriting">I cherish every moment with you 🥂</p>
+                    
+                    <div class="caption-container">
+                        <p class="caption font-handwriting">
+                            <span class="hidden-text">I cherish every moment with you 🥂</span>
+                            <span class="typewriter-text">I cherish every moment with you 🥂</span>
+                            <span class="sparkle-cursor">✨</span>
+                        </p>
+                    </div>
                     <span class="nav-hint">← Prev Page</span>
                 </div>
             </div>
@@ -339,26 +451,32 @@
             <div class="leaf" id="leaf-3" onclick="flipLeaf(3)">
                 <!-- FRONT: Page 4 (Right Side of Second Spread - Finale) -->
                 <div class="page front">
+                    <div class="page-decor decor-3" style="font-size:30px">🌹</div>
+                    <div class="page-decor decor-4">✨</div>
+
                     <div class="ribbon"></div>
                     
-                    <div class="final-page-layout relative w-full">
+                    <div class="final-page-layout">
                         <!-- Hanging Photo -->
-                        <div class="hanging-photo" style="top: 15%;">
+                        <div class="hanging-photo">
                             <div class="push-pin"></div>
                             <div class="polaroid">
-                                <!-- EDIT FINAL PHOTO HERE -->
                                 <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=600&q=80" alt="Final Memory">
                             </div>
                         </div>
                         
                         <!-- Caption -->
-                        <!-- EDIT FINAL CAPTION HERE -->
-                        <p class="caption font-handwriting">Forever and always... 💖</p>
+                        <div class="caption-container">
+                            <p class="caption font-handwriting">
+                                <span class="hidden-text">Forever and always... 💖</span>
+                                <span class="typewriter-text">Forever and always... 💖</span>
+                                <span class="sparkle-cursor">✨</span>
+                            </p>
+                        </div>
                         
                         <!-- MATH HEART CANVAS -->
                         <canvas id="heartCanvas"></canvas>
                     </div>
-
                 </div>
                 <!-- BACK: Back Cover -->
                 <div class="page back cover back-cover flex justify-center items-center flex-col">
@@ -375,7 +493,7 @@
         // ==========================================
         // CONFIGURATION
         // ==========================================
-        const PASSCODE = "FOREVER"; // Must be uppercase
+        const PASSCODE = "FOREVER"; 
         const HEART_TEXT = "I love you";
 
         // ==========================================
@@ -414,13 +532,12 @@
             document.getElementById('leaf-3')
         ];
         
-        let currentSpread = 0; // 0 = Cover, 1 = Pages 1&2, 2 = Pages 3&4(Finale), 3 = Back Cover
+        let currentSpread = 0; 
         let heartAnimFrameId = null;
 
         function initBook() {
             document.getElementById('book-wrapper').style.display = 'block';
             
-            // Try playing audio (requires user interaction, which the lock screen button provides)
             const audio = document.getElementById('bg-music');
             audio.volume = 0.4;
             audio.play().catch(e => console.log("Audio play blocked by browser"));
@@ -429,9 +546,6 @@
         }
 
         function updateZIndexes() {
-            // Fixes the 3D overlapping issues during rotation
-            // Pages on the right (not flipped) need decreasing z-index from top to bottom
-            // Pages on the left (flipped) need increasing z-index from top to bottom
             leaves.forEach((leaf, i) => {
                 if (leaf.classList.contains('flipped')) {
                     leaf.style.zIndex = i;
@@ -441,38 +555,52 @@
             });
         }
 
+        function triggerTypingAnimation(spreadIndex) {
+            // Remove typing class from all containers
+            document.querySelectorAll('.caption-container').forEach(c => c.classList.remove('is-typing'));
+            
+            // Add typing class to the active pages
+            if (spreadIndex === 1) {
+                // Pages 1 and 2
+                document.querySelector('#leaf-1 .back .caption-container').classList.add('is-typing');
+                document.querySelector('#leaf-2 .front .caption-container').classList.add('is-typing');
+            } else if (spreadIndex === 2) {
+                // Pages 3 and 4
+                document.querySelector('#leaf-2 .back .caption-container').classList.add('is-typing');
+                document.querySelector('#leaf-3 .front .caption-container').classList.add('is-typing');
+            }
+        }
+
         function flipLeaf(leafIndex) {
             const leaf = leaves[leafIndex - 1];
             
             if (leaf.classList.contains('flipped')) {
-                // Flip BACK to the right
                 leaf.classList.remove('flipped');
                 currentSpread--;
             } else {
-                // Flip FORWARD to the left
-                
-                // Prevent flipping out of order (must flip top-most right page)
                 if (leafIndex - 1 !== currentSpread) return;
-                
                 leaf.classList.add('flipped');
                 currentSpread++;
             }
 
-            // Update z-indexes immediately to handle visual stacking
             updateZIndexes();
-            // And again slightly delayed to cover the mid-flip intersection
             setTimeout(updateZIndexes, 300);
+            
+            // Trigger typewriter effect for the new spread
+            triggerTypingAnimation(currentSpread);
 
             // Handle Heart Animation Trigger
+            const canvas = document.getElementById('heartCanvas');
             if (currentSpread === 2) {
-                // They just reached the final spread!
+                // Delay canvas fade-in to let the typing finish
                 setTimeout(() => {
+                    canvas.style.opacity = '1';
                     startTurtleHeartAnimation();
-                }, 600); // Wait for page turn to almost finish
+                }, 2200); 
             } else {
-                // Stop animation if they leave the page to save CPU
                 if (heartAnimFrameId) cancelAnimationFrame(heartAnimFrameId);
-                drawnCount = 0; // Reset so it redraws when they come back
+                drawnCount = 0; 
+                canvas.style.opacity = '0';
             }
         }
 
@@ -497,7 +625,7 @@
             return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
         }
 
-        let drawnCount = 0; // Keeps track of animation progress
+        let drawnCount = 0; 
 
         function startTurtleHeartAnimation() {
             const canvas = document.getElementById('heartCanvas');
@@ -505,7 +633,6 @@
 
             const dpr = window.devicePixelRatio || 1;
             
-            // Get actual CSS dimensions of the canvas
             const rect = canvas.getBoundingClientRect();
             const width = rect.width;
             const height = rect.height;
@@ -516,16 +643,13 @@
             const ctx = canvas.getContext('2d');
             ctx.scale(dpr, dpr);
 
-            // Scale math to fit inside the canvas
             const baseUnit = Math.min(width, height) / 480; 
             const centerX = width / 2;
             const centerY = height / 2 + (15 * baseUnit);
 
             const points = [];
             
-            // Math Loop from Python (scales 11 to 16)
             for (let scale = 11; scale <= 16; scale++) {
-                // Hue shift from deep red to soft pink
                 let hue = 0.95 + (scale - 11) * 0.02;
                 let color = hsvToRgb(hue > 1 ? hue - 1 : hue, 0.8, 1.0);
 
@@ -545,10 +669,9 @@
             }
 
             const pointsPerFrame = 8;
-            drawnCount = 0; // Restart animation
+            drawnCount = 0; 
 
             function renderFrame() {
-                // Creates a beautiful trailing ghost effect
                 ctx.fillStyle = "rgba(0, 0, 0, 0.25)"; 
                 ctx.fillRect(0, 0, width, height);
 
@@ -567,7 +690,6 @@
                     ctx.globalAlpha = 0.85;
                     ctx.fillStyle = pt.color;
 
-                    // Neon Glow on outer edge
                     if (pt.scale >= 15) {
                         ctx.shadowColor = pt.color;
                         ctx.shadowBlur = 8;
@@ -582,8 +704,7 @@
                 ctx.globalAlpha = 1;
 
                 if (drawnCount >= points.length) {
-                    // Final Solid Render
-                    ctx.fillStyle = "black"; // Or transparent if you prefer
+                    ctx.fillStyle = "black"; 
                     ctx.fillRect(0, 0, width, height);
                     for (let idx = 0; idx < points.length; idx++) {
                         const pt = points[idx];
@@ -600,7 +721,7 @@
                         }
                         ctx.fillText(HEART_TEXT, pt.x, pt.y);
                     }
-                    return; // End animation
+                    return; 
                 }
 
                 heartAnimFrameId = requestAnimationFrame(renderFrame);
@@ -610,4 +731,4 @@
     </script>
 </body>
 </html>
-Creating the digital scrapbook layout
+Processed and analysed in code
